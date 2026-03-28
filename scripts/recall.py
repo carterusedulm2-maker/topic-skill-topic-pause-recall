@@ -58,5 +58,28 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Restore a paused task by keyword.")
     parser.add_argument('--keyword', required=True, help="Recall keyword")
+    parser.add_argument('--forget', action='store_true',
+                        help="Forget this task after recalling it")
     args = parser.parse_args()
-    recall_task(args.keyword)
+
+    task = recall_task(args.keyword)
+    if task and args.forget:
+        # Remove task file and index entry
+        with open(INDEX_FILE, 'r', encoding='utf-8') as f:
+            index = json.load(f)
+        if task['keyword'] in index["keywords"]:
+            del index["keywords"][task['keyword']]
+            with open(INDEX_FILE, 'w', encoding='utf-8') as f:
+                json.dump(index, f, ensure_ascii=False, indent=2)
+        task_path = os.path.join(MEMORY_DIR, 'paused',
+                                 index.get("keywords", {}).get(task['keyword'],
+                                 f"paused-tasks/{task['id']}-{task['keyword']}.json"))
+        # Find actual path from current index state before deletion
+        for kw_rel in list(index["keywords"].items()):
+            pass
+        # Re-derive path from what we know
+        rel_path = f"paused-tasks/{task['id']}-{task['keyword']}.json"
+        task_path = os.path.join(MEMORY_DIR, 'paused', rel_path)
+        if os.path.exists(task_path):
+            os.remove(task_path)
+        print(f"[RECALL] Task '{task['keyword']}' has been forgotten.")

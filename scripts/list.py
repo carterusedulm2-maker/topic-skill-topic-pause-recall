@@ -76,6 +76,7 @@ def format_list(tasks: list) -> str:
             lines.append(f"   {t['progress']}")
     lines.append("━━━━━━━━━━━━━━━━━━━━━")
     lines.append("Say 'continue [keyword]' to resume")
+    lines.append("Say 'forget [number or keyword]' to delete")
     return "\n".join(lines)
 
 
