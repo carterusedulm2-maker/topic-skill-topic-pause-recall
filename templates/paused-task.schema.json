@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PausedTask",
+  "description": "通用任務狀態schema，不含任何本地路徑或任務特定內容",
+  "type": "object",
+  "required": ["id", "keyword", "title", "status", "pausedAt"],
+  "properties": {
+    "id": { "type": "string" },
+    "keyword": { "type": "string", "description": "召回關鍵字（小寫）" },
+    "title": { "type": "string", "description": "人類可讀標題" },
+    "status": { "type": "string", "enum": ["paused", "in_progress", "completed", "abandoned"] },
+    "phase": { "type": "string" },
+    "pausedAt": { "type": "string", "format": "date-time" },
+    "lastAccessedAt": { "type": "string", "format": "date-time" },
+    "pauseCount": { "type": "integer" },
+    "progress": {
+      "type": "object",
+      "properties": {
+        "percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "description": { "type": "string" }
+      }
+    },
+    "nextSteps": { "type": "array", "items": { "type": "string" } },
+    "context": { "type": "object", "description": "任務相關上下文，結構由調用者定義" },
+    "conversationSummary": { "type": "object" },
+    "attachedFiles": { "type": "array", "items": { "type": "string" } }
+  }
+}
